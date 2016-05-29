@@ -348,7 +348,8 @@ public interface OdeMessages extends Messages {
 
   // Used in Ode.java
 
-  @DefaultMessage("MIT App Inventor")
+  // TODO(user): Replace with commented version once we're ready
+  @DefaultMessage("MIT App Inventor 2")
   @Description("Title for App Inventor")
   String titleYoungAndroid();
 
@@ -1133,6 +1134,10 @@ public interface OdeMessages extends Messages {
   @DefaultMessage("Percentage input values should be between 1 and 100")
   @Description("Error shown after validation of percentage input fields.")
   String nonvalidPercentValue();
+
+  @DefaultMessage("Unsupported Width Input Value")
+  @Description("Unsupported Width Input Value.")
+  String unSupportedWidthInputValue();
 
   // Used in editor/youngandroid/properties/YoungAndroidScreenAnimationChoicePropertyEditor.java
 
@@ -5799,5 +5804,13 @@ public interface OdeMessages extends Messages {
   @DefaultMessage("You are in Read Only Mode")
   @Description("")
   String readOnlyMode();
+
+  @DefaultMessage("arc")
+  @Description("Text for button shape choice 'arc'")
+  String arcButtonShape();
+
+  @DefaultMessage("Units")
+  @Description("Units option for the width property")
+  String unitsCaption();
 
 }
