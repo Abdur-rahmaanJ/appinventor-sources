@@ -5880,6 +5880,17 @@ public interface OdeMessages extends Messages {
   @Description("")
   String FirebaseDBHelpStringComponentPallette();
 
+  @DefaultMessage("<p>A non-visible component that models the Raspberry Pi and acts as " +
+      "an MQTT broker that relays messages between the RaspberryPiPinClients and other " +
+      "external MQTT based sources.</p>")
+  @Description("")
+  String RaspberryPiServerHelpStringComponentPallette();
+
+  @DefaultMessage("<p>A non-visible component that models any device that can" +
+      "be attached to a pin of the Raspberry Pi.</p>")
+  @Description("")
+  String RaspberryPiPinClientHelpStringComponentPallette();
+
 
   //Ode.java messages
   @DefaultMessage("Welcome to App Inventor 2!")

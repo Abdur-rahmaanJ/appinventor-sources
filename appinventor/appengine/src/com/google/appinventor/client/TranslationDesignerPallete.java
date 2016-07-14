@@ -351,6 +351,10 @@ public class TranslationDesignerPallete {
       value = MESSAGES.YandexTranslateHelpStringComponentPallette();
     } else if (key.equals("FirebaseDB-helpString")) {
       value = MESSAGES.FirebaseDBHelpStringComponentPallette();
+    } else if (key.equals("RaspberryPiPinClient-helpString")) {
+      value = MESSAGES.RaspberryPiPinClientHelpStringComponentPallette();
+    } else if (key.equals("RaspberryPiServer-helpString")) {
+      value = MESSAGES.RaspberryPiServerHelpStringComponentPallette();
     } else value = key; //for External Components
     return value;
   }

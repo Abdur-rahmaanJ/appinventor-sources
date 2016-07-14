@@ -35,10 +35,15 @@ import com.google.appinventor.components.common.YaVersion;
  */
 @DesignerComponent(description = "<p>A non-visible component that models the Raspberry Pi and acts as "
     + "an MQTT broker that relays messages between the RaspberryPiPinClients and other "
-    + "external MQTT based sources.</p>", version = YaVersion.RASPBERRYPI_COMPONENT_VERSION, category = ComponentCategory.EXPERIMENTAL, nonVisible = true, iconName = "images/raspberryPi.png")
+    + "external MQTT based sources.</p>",
+    version = YaVersion.RASPBERRYPI_COMPONENT_VERSION,
+    category = ComponentCategory.EXPERIMENTAL,
+    nonVisible = true,
+    iconName = "images/raspberryPi.png")
 @SimpleObject
 @UsesPermissions(permissionNames = "aadroid.permission.INTERNET")
-@UsesLibraries(libraries = "org.eclipse.paho.android.service-1.0.2.jar, org.eclipse.paho.client.mqttv3-1.0.2.jar, raspberrypi-mqtt-messages-1.0-SNAPSHOT.jar")
+@UsesLibraries(libraries = "org.eclipse.paho.android.service-1.0.2.jar, org.eclipse.paho.client.mqttv3-1.0.2.jar, " +
+    "raspberrypi-mqtt-messages-1.0-SNAPSHOT.jar")
 public class RaspberryPiServer extends AndroidNonvisibleComponent implements Component, RaspberryPiMessageListener {
 
   private static final boolean DEBUG = true;
@@ -56,8 +61,7 @@ public class RaspberryPiServer extends AndroidNonvisibleComponent implements Com
   /**
    * Creates a new AndroidNonvisibleComponent.
    *
-   * @param container
-   *          the component will be placed in
+   * @param pContainer the container that the component will be placed in
    */
   public RaspberryPiServer(ComponentContainer pContainer) {
     super(pContainer.$form());
@@ -81,9 +85,11 @@ public class RaspberryPiServer extends AndroidNonvisibleComponent implements Com
    *
    * @param pModel
    */
-  @DesignerProperty(editorType = PropertyTypeConstants.PROPERTY_TYPE_STRING, defaultValue = Component.RASPBERRYPI_SERVER_VALUE)
+  @DesignerProperty(editorType = PropertyTypeConstants.PROPERTY_TYPE_STRING,
+      defaultValue = Component.RASPBERRYPI_SERVER_VALUE)
   @SimpleProperty(description = "Sets the model version of the Raspberry Pi. "
-      + "Depending on this model input, we will perform pin validation in the RaspberryPiPinClient inputs.", userVisible = true)
+      + "Depending on this model input, we will perform pin validation in the RaspberryPiPinClient inputs.",
+      userVisible = true)
   public void Model(String pModel) {
     model = pModel;
     if (pModel.equals("Pi1A") || pModel.equals("Pi1B")) {
@@ -100,7 +106,9 @@ public class RaspberryPiServer extends AndroidNonvisibleComponent implements Com
    *
    * @return model
    */
-  @SimpleProperty(description = "Returns the model type of the RaspberryPi Server", category = PropertyCategory.BEHAVIOR, userVisible = true)
+  @SimpleProperty(description = "Returns the model type of the RaspberryPi Server",
+      category = PropertyCategory.BEHAVIOR,
+      userVisible = true)
   public String Model() {
     return model;
   }
@@ -109,10 +117,13 @@ public class RaspberryPiServer extends AndroidNonvisibleComponent implements Com
    * The IP Address of the Raspberry Pi device. The MQTT broker should be
    * reachable via this address.
    * 
-   * @param pModel
+   * @param pIpv4Address the IP address of the Raspberry Pi
    */
-  @DesignerProperty(editorType = PropertyTypeConstants.PROPERTY_TYPE_STRING, defaultValue = Component.RASPBERRYPI_SERVER_IPV4_VALUE)
-  @SimpleProperty(description = "The IP Address of the Raspberry Pi device.  The MQTT broker should be reachable via this address.", userVisible = true)
+  @DesignerProperty(editorType = PropertyTypeConstants.PROPERTY_TYPE_STRING,
+      defaultValue = Component.RASPBERRYPI_SERVER_IPV4_VALUE)
+  @SimpleProperty(description = "The IP Address of the Raspberry Pi device.  " +
+      "The MQTT broker should be reachable via this address.",
+      userVisible = true)
   public void Ipv4Address(String pIpv4Address) {
     ipv4Address = pIpv4Address;
     // TODO Validate the ipAddress and see it is reachable
@@ -123,7 +134,9 @@ public class RaspberryPiServer extends AndroidNonvisibleComponent implements Com
    *
    * @return Ipv4Address
    */
-  @SimpleProperty(description = "Returns the model type of the RaspberryPi Server", category = PropertyCategory.BEHAVIOR, userVisible = true)
+  @SimpleProperty(description = "Returns the model type of the RaspberryPi Server",
+      category = PropertyCategory.BEHAVIOR,
+      userVisible = true)
   public String Ipv4Address() {
     return ipv4Address;
   }
@@ -133,9 +146,10 @@ public class RaspberryPiServer extends AndroidNonvisibleComponent implements Com
    * 
    * @param pPort
    */
-  @DesignerProperty(editorType = PropertyTypeConstants.PROPERTY_TYPE_NON_NEGATIVE_INTEGER, defaultValue = Component.RASPBERRYPI_SERVER_PORT_VALUE
-      + "")
-  @SimpleProperty(description = "The TCP/IP port that the MQTT broker on the RaspberryPi is running on.", userVisible = true)
+  @DesignerProperty(editorType = PropertyTypeConstants.PROPERTY_TYPE_NON_NEGATIVE_INTEGER,
+      defaultValue = Component.RASPBERRYPI_SERVER_PORT_VALUE + "")
+  @SimpleProperty(description = "The TCP/IP port that the MQTT broker on the RaspberryPi is running on.",
+      userVisible = true)
   public void Port(int pPort) {
     port = pPort;
     // TODO Validate the port
@@ -147,7 +161,9 @@ public class RaspberryPiServer extends AndroidNonvisibleComponent implements Com
    *
    * @return port
    */
-  @SimpleProperty(description = "Returns the TCP/IP port that the MQTT broker on the RaspberryPi is running on.", category = PropertyCategory.BEHAVIOR, userVisible = true)
+  @SimpleProperty(description = "Returns the TCP/IP port that the MQTT broker on the RaspberryPi is running on.",
+      category = PropertyCategory.BEHAVIOR,
+      userVisible = true)
   public int Port() {
     return port;
   }
@@ -158,10 +174,11 @@ public class RaspberryPiServer extends AndroidNonvisibleComponent implements Com
    * 
    * @param pQos
    */
-  @DesignerProperty(editorType = PropertyTypeConstants.PROPERTY_TYPE_NON_NEGATIVE_INTEGER, defaultValue = Component.RASPBERRYPI_SERVER_QOS_VALUE
-      + "")
+  @DesignerProperty(editorType = PropertyTypeConstants.PROPERTY_TYPE_NON_NEGATIVE_INTEGER,
+      defaultValue = Component.RASPBERRYPI_SERVER_QOS_VALUE + "")
   @SimpleProperty(description = "Quality of Service parameter for a RaspberryPi Server broker, "
-      + "which guarantees the received status of the messages.", userVisible = true)
+      + "which guarantees the received status of the messages.",
+      userVisible = true)
   public void Qos(int pQos) {
     if (pQos > 2) {
       Log.e(LOG_TAG, "QOS was " + pQos + ". It has to be either 0, 1 or 2.");
@@ -177,7 +194,9 @@ public class RaspberryPiServer extends AndroidNonvisibleComponent implements Com
    * @return model
    */
   @SimpleProperty(description = "Returns the Quality of Service parameter for a RaspberryPi Server broker, "
-      + "which guarantees the received status of the messages.", category = PropertyCategory.BEHAVIOR, userVisible = true)
+      + "which guarantees the received status of the messages.",
+      category = PropertyCategory.BEHAVIOR,
+      userVisible = true)
   public String Qos() {
     return model;
   }
@@ -256,7 +275,8 @@ public class RaspberryPiServer extends AndroidNonvisibleComponent implements Com
    * @return the number of clients that were registered with the RaspberryPi
    *         broker, but are now disconnected.
    */
-  @SimpleFunction(description = "Returns the number of clients that were registered with the RaspberryPi broker, but are now disconnected.")
+  @SimpleFunction(description = "Returns the number of clients that were registered with the RaspberryPi broker, " +
+      "but are now disconnected.")
   public int DisconnectedClients() {
     if (DEBUG) {
       Log.d(LOG_TAG, "Getting the disconnected clients...");
@@ -342,7 +362,7 @@ public class RaspberryPiServer extends AndroidNonvisibleComponent implements Com
     if (DEBUG) {
       StringBuilder topicBuilder = new StringBuilder();
       for (String topic : topics) {
-	topicBuilder.append(topic);
+	      topicBuilder.append(topic);
       }
       String allTopics = topicBuilder.toString();
       Log.d(LOG_TAG, "Mqtt Message " + message + " sent on subjects " + allTopics + ".");
