@@ -57,7 +57,7 @@ public class RaspberryPiPinClient extends AndroidNonvisibleComponent implements 
   private final static String LOG_TAG = "RaspberryPiPinClient";
 
   private int pinNumber = -1;
-  private boolean pinState;
+  private boolean pinState = false; // false means OFF or LOW.
   private int pinMode;
   private int pullResistance;
   private String deviceName;
@@ -331,6 +331,7 @@ public class RaspberryPiPinClient extends AndroidNonvisibleComponent implements 
 	      Log.d(LOG_TAG, "Registering Pin " + pinNumber
             + " with this RaspberryPiServer with this MQTT message: " + message);
       }
+      Subscribe(Topic.INTERNAL.toString());
     }
   }
 
@@ -338,7 +339,7 @@ public class RaspberryPiPinClient extends AndroidNonvisibleComponent implements 
       "or vice versa.")
   public void PinStateChanged() {
     if (DEBUG) {
-      Log.d(LOG_TAG, "RaspberryPi pin " + pinNumber + " state changed to " + pinState + ".");
+      Log.d(LOG_TAG, "PinStateChanged: RaspberryPi pin " + pinNumber + " state changed to " + pinState + ".");
     }
     EventDispatcher.dispatchEvent(this, "PinStateChanged");
   }
@@ -346,18 +347,16 @@ public class RaspberryPiPinClient extends AndroidNonvisibleComponent implements 
   @SimpleEvent(description = "Event handler to return if the state of the pin changed to HIGH.")
   public void PinStateChangedToHigh() {
     if (DEBUG) {
-      Log.d(LOG_TAG, "RaspberryPi pin " + pinNumber + " state changed to " + pinState + ".");
+      Log.d(LOG_TAG, "PinStateChangedToHigh: RaspberryPi pin " + pinNumber + " state changed to " + pinState + ".");
     }
-    pinState = true;
     EventDispatcher.dispatchEvent(this, "PinStateChangedToHigh");
   }
 
   @SimpleEvent(description = "Event handler to return if the state of the pin changed to LOW.")
   public void PinStateChangedToLow() {
     if (DEBUG) {
-      Log.d(LOG_TAG, "RaspberryPi pin " + pinNumber + " state changed to " + pinState + ".");
+      Log.d(LOG_TAG, "PinStateChangedToLow: RaspberryPi pin " + pinNumber + " state changed to " + pinState + ".");
     }
-    pinState = false;
     EventDispatcher.dispatchEvent(this, "PinStateChangedToLow");
   }
 
@@ -377,22 +376,24 @@ public class RaspberryPiPinClient extends AndroidNonvisibleComponent implements 
       Log.d(LOG_TAG, "Mqtt Message " + message + " received on subject " + topic + ".");
     }
     if (mPinDirection.equals(PinDirection.IN) && topic.equals(Topic.INTERNAL.toString())) {
-      HeaderPin pin = Messages.deconstrctPinMessage(message);
+      HeaderPin raspberryPiPin = Messages.deconstrctPinMessage(message);
       if (DEBUG) {
-	      Log.d(LOG_TAG, "Received internal message for pin =" + pin);
+	      Log.d(LOG_TAG, "Received internal message for pin =" + raspberryPiPin);
       }
-      if (pin.number == pinNumber) {
-        if (pin.property.equals(PinProperty.PIN_STATE)) {
-          if (pin.value.equals(PinValue.HIGH)) {
-            PinStateChangedToHigh();
+      if (raspberryPiPin.number == pinNumber) {
+        if (raspberryPiPin.property.equals(PinProperty.PIN_STATE)) {
+          if (raspberryPiPin.value.equals(PinValue.HIGH)) {
             if (!pinState) {
+              pinState = true;
               PinStateChanged();
             }
-          } else if (pin.value.equals(PinValue.LOW)) {
-            PinStateChangedToLow();
+            PinStateChangedToHigh();
+          } else if (raspberryPiPin.value.equals(PinValue.LOW)) {
             if (pinState) {
+              pinState = false;
               PinStateChanged();
             }
+            PinStateChangedToLow();
           }
         }
       }
