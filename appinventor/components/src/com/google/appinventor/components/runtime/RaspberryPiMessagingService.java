@@ -18,7 +18,6 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.provider.Settings.Secure;
 import android.util.Log;
-import edu.mit.mqtt.raspberrypi.model.messaging.Topic;
 
 /**
  * The service that handles the communication between the clients and the

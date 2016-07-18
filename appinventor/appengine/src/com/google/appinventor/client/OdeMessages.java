@@ -6313,10 +6313,6 @@ public interface OdeMessages extends Messages {
   @Description("")
   String MqttConnectionLostEvents();
 
-  @DefaultMessage("PinConnected")
-  @Description("")
-  String PinConnectedEvents();
-
   @DefaultMessage("PinStateChanged")
   @Description("")
   String PinStateChangedEvents();
@@ -6359,13 +6355,13 @@ public interface OdeMessages extends Messages {
   
   /* Properties */
 
-  @DefaultMessage("Ipv4Address")
-  @Description("")
-  String Ipv4AddressProperties();
-
   @DefaultMessage("Model")
   @Description("")
   String ModelProperties();
+
+  @DefaultMessage("ServerAddress")
+  @Description("")
+  String ServerAddressProperties();
 
   @DefaultMessage("Port")
   @Description("")

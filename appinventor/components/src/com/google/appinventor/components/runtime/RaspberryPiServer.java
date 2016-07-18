@@ -21,6 +21,7 @@ import com.google.appinventor.components.annotations.UsesPermissions;
 import com.google.appinventor.components.common.ComponentCategory;
 import com.google.appinventor.components.common.PropertyTypeConstants;
 import com.google.appinventor.components.common.YaVersion;
+import com.google.appinventor.components.runtime.errors.ConnectionError;
 
 /**
  * RaspberryPiServer models the Raspberry Pi and acts as an MQTT broker that
@@ -50,8 +51,9 @@ public class RaspberryPiServer extends AndroidNonvisibleComponent implements Com
   private final static String LOG_TAG = "RaspberryPiServer";
 
   private String model;
-  private String ipv4Address;
+  private String serverAddress;
   private int port;
+  private String identifier;
   private int qos;
   private int pins;
   private boolean shutdown = false;
@@ -114,19 +116,19 @@ public class RaspberryPiServer extends AndroidNonvisibleComponent implements Com
   }
 
   /**
-   * The IP Address of the Raspberry Pi device. The MQTT broker should be
-   * reachable via this address.
+   * The IP Address or the named address of the Raspberry Pi device. The MQTT
+   * broker should be reachable via this address.
    * 
-   * @param pIpv4Address the IP address of the Raspberry Pi
+   * @param pServerAddress
+   *          the IP address of the Raspberry Pi
    */
   @DesignerProperty(editorType = PropertyTypeConstants.PROPERTY_TYPE_STRING,
       defaultValue = Component.RASPBERRYPI_SERVER_IPV4_VALUE)
-  @SimpleProperty(description = "The IP Address of the Raspberry Pi device.  " +
-      "The MQTT broker should be reachable via this address.",
+  @SimpleProperty(description = "The IP Address or the server address of the Raspberry Pi device.  "
+      + "The MQTT broker should be reachable via this address.",
       userVisible = true)
-  public void Ipv4Address(String pIpv4Address) {
-    ipv4Address = pIpv4Address;
-    // TODO Validate the ipAddress and see it is reachable
+  public void ServerAddress(String pServerAddress) {
+    serverAddress = pServerAddress;
   }
 
   /**
@@ -134,11 +136,11 @@ public class RaspberryPiServer extends AndroidNonvisibleComponent implements Com
    *
    * @return Ipv4Address
    */
-  @SimpleProperty(description = "Returns the model type of the RaspberryPi Server",
+  @SimpleProperty(description = "Returns the address of the RaspberryPi Server",
       category = PropertyCategory.BEHAVIOR,
       userVisible = true)
-  public String Ipv4Address() {
-    return ipv4Address;
+  public String ServerAddress() {
+    return serverAddress;
   }
 
   /**
@@ -151,8 +153,11 @@ public class RaspberryPiServer extends AndroidNonvisibleComponent implements Com
   @SimpleProperty(description = "The TCP/IP port that the MQTT broker on the RaspberryPi is running on.",
       userVisible = true)
   public void Port(int pPort) {
-    port = pPort;
-    // TODO Validate the port
+    if (pPort >= 1024 && pPort <= 65535) {
+      port = pPort;
+    } else {
+      throw new ConnectionError("Please enter a valid port number. You entered " + pPort);
+    }
   }
 
   /**
@@ -204,17 +209,18 @@ public class RaspberryPiServer extends AndroidNonvisibleComponent implements Com
   /**
    * Initializes the RaspberryPiServer to send and receive MQTT messages.
    * @param model
-   * @param brokerIpAddress
+   * @param brokerAddress
    * @param brokerPort
    */
   @SimpleFunction(description = "Returns true if the client with the given pin number is connected.")
-  public void Initialize(String model, String brokerIpAddress, int brokerPort) {
+  public void Initialize(String model, String brokerAddress, int brokerPort, String identifier) {
     if (DEBUG) {
       Log.d(LOG_TAG, "Initializing the RaspberryPiServer properties...");
     }
     this.model = model;
-    this.ipv4Address = brokerIpAddress;
+    this.serverAddress = brokerAddress;
     this.port = brokerPort;
+    this.identifier = identifier;
   }
  
   /**
@@ -238,7 +244,7 @@ public class RaspberryPiServer extends AndroidNonvisibleComponent implements Com
     }
     shutdown = true;
     // TODO
-    mRaspberryPiMessagingService.publish(Topic.INTERNAL.name(), Action.SHUTDOWN.name());
+    mRaspberryPiMessagingService.publish(getInternalTopic(), Action.SHUTDOWN.name());
     if (DEBUG) {
       Log.d(LOG_TAG, "Completed shutting down the RaspberryPi Server.");
     }
@@ -385,8 +391,15 @@ public class RaspberryPiServer extends AndroidNonvisibleComponent implements Com
 
   @Override
   public String toString() {
-    return "RaspberryPiServer[ipv4Address:" + ipv4Address + ", port:" + port + ", model:" + model + ", pins:" + pins
+    return "RaspberryPiServer[ipv4Address:" + serverAddress + ", port:" + port + ", model:" + model + ", pins:" + pins
         + ", qos:" + qos + "]";
+  }
+
+  public String getInternalTopic() {
+    StringBuilder topicBuilder = new StringBuilder();
+    topicBuilder.append(Topic.INTERNAL.toString());
+    topicBuilder.append(identifier);
+    return topicBuilder.toString();
   }
 
 }

@@ -9,8 +9,6 @@ import edu.mit.mqtt.raspberrypi.model.device.PinDirection;
 import edu.mit.mqtt.raspberrypi.model.device.PinProperty;
 import edu.mit.mqtt.raspberrypi.model.device.PinValue;
 import edu.mit.mqtt.raspberrypi.model.device.RaspberrryPiModel;
-import edu.mit.mqtt.raspberrypi.model.messaging.Topic;
-
 import com.google.appinventor.components.annotations.DesignerProperty;
 
 import java.util.List;
@@ -131,7 +129,7 @@ public class RaspberryPiPinClient extends AndroidNonvisibleComponent implements 
     if (DEBUG) {
       Log.d(LOG_TAG, "Setting Pin " + pinNumber + " to " + myPin.value + " with this MQTT message: " + message);
     }
-    mRaspberryPiMessagingService.publish(Topic.INTERNAL.toString(), message);
+    mRaspberryPiMessagingService.publish(raspberryPiServer.getInternalTopic(), message);
     if (DEBUG) {
       Log.d(LOG_TAG, "Set Pin " + pinNumber + " to " + myPin.value + " with this MQTT message: " + message);
     }
@@ -308,7 +306,7 @@ public class RaspberryPiPinClient extends AndroidNonvisibleComponent implements 
       Log.d(LOG_TAG, "Registered " + this + " to " + raspberryPiServer + " with direction " + mPinDirection);
     }
 
-    String ipv4Address = this.raspberryPiServer.Ipv4Address();
+    String ipv4Address = this.raspberryPiServer.ServerAddress();
     int port = this.raspberryPiServer.Port();
     if (DEBUG) {
       Log.d(LOG_TAG, "Connecting to the RaspberryPiSever " + ipv4Address + ":" + port);
@@ -326,12 +324,12 @@ public class RaspberryPiPinClient extends AndroidNonvisibleComponent implements 
 	      Log.d(LOG_TAG, "Registering Pin " + pinNumber
             + " with this RaspberryPiServer with this MQTT message: " + message);
       }
-      mRaspberryPiMessagingService.publish(Topic.INTERNAL.toString(), message);
+      mRaspberryPiMessagingService.publish(raspberryPiServer.getInternalTopic(), message);
       if (DEBUG) {
 	      Log.d(LOG_TAG, "Registering Pin " + pinNumber
             + " with this RaspberryPiServer with this MQTT message: " + message);
       }
-      Subscribe(Topic.INTERNAL.toString());
+      Subscribe(raspberryPiServer.getInternalTopic());
     }
   }
 
@@ -360,22 +358,13 @@ public class RaspberryPiPinClient extends AndroidNonvisibleComponent implements 
     EventDispatcher.dispatchEvent(this, "PinStateChangedToLow");
   }
 
-  @SimpleEvent(description = "Event handler when the pin is connected to a device.")
-  public void PinConnected() {
-    if (DEBUG) {
-      Log.d(LOG_TAG, "RaspberryPi pin " + pinNumber + " connected.");
-    }
-    // TODO what is the condition here?
-    EventDispatcher.dispatchEvent(this, "PinConnected");
-  }
-
   @Override
   @SimpleEvent(description = "Event handler when a message is received through MQTT.")
   public void MqttMessageReceived(String topic, String message) {
     if (DEBUG) {
       Log.d(LOG_TAG, "Mqtt Message " + message + " received on subject " + topic + ".");
     }
-    if (mPinDirection.equals(PinDirection.IN) && topic.equals(Topic.INTERNAL.toString())) {
+    if (mPinDirection.equals(PinDirection.IN) && topic.equals(raspberryPiServer.getInternalTopic())) {
       HeaderPin raspberryPiPin = Messages.deconstrctPinMessage(message);
       if (DEBUG) {
 	      Log.d(LOG_TAG, "Received internal message for pin =" + raspberryPiPin);
