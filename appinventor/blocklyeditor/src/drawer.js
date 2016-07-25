@@ -565,7 +565,7 @@ Blockly.Drawer.defaultBlockXMLStrings = {
             '<block type="component_method">' +
               //mutator generator
             Blockly.Drawer.mutatorAttributesToXMLString(mutatorAttributes) +
-            '<value name="ARG0"><block type="text"><title name="TEXT">Pi2B+</title></block></value>' +
+            '<value name="ARG0"><block type="text"><title name="TEXT">Pi2B</title></block></value>' +
             '<value name="ARG1"><block type="text"><title name="TEXT">iot.eclipse.org</title></block></value>' +
             '<value name="ARG2"><block type="math_number"><title name="NUM">1883</title></block></value>' +
             '<value name="ARG3"><block type="text"><title name="TEXT"></title></block></value>' +

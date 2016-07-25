@@ -14,6 +14,8 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.provider.Settings.Secure;
@@ -47,6 +49,7 @@ public class RaspberryPiMessagingService implements MqttCallback {
   private MemoryPersistence mMemStore; // MemoryStore
   private MqttConnectOptions mOpts; // Connection Options
   private Handler parentHandler; // Handler from main thread
+  private ConnectivityManager mConnectivityManager;       // To check for connectivity changes
 
   private String mDeviceId; // Device ID, Secure.ANDROID_ID
   private String mIpAdress;
@@ -74,6 +77,8 @@ public class RaspberryPiMessagingService implements MqttCallback {
 
     parentHandler = pHandler;
 
+    mConnectivityManager = (ConnectivityManager) pContext.getSystemService(Context.CONNECTIVITY_SERVICE);
+    
     mListeners = new ArrayList<RaspberryPiMessageListener>();
   }
 
@@ -154,7 +159,6 @@ public class RaspberryPiMessagingService implements MqttCallback {
 	  if (DEBUG) {
 	    Log.d(LOG_TAG, "Sent a message:  Topic:\t" + pTopic + "  Message:\t" + pMessage);
 	  }
-	  mClient.disconnect();
 	} catch (MqttException e) {
 	  Log.e(LOG_TAG, "Failed to send a message:  Topic:\t" + pTopic + "  Message:\t" + pMessage + "\tError: "
               + e.getMessage());
@@ -274,7 +278,7 @@ public class RaspberryPiMessagingService implements MqttCallback {
     if (DEBUG) {
       Log.d(LOG_TAG, "Connection Lost...");
     }
-    mClient = null;
+ //   mClient = null;
 
     for (final RaspberryPiMessageListener listener : mListeners) {
       parentHandler.post(new Runnable() {
@@ -284,7 +288,35 @@ public class RaspberryPiMessagingService implements MqttCallback {
 	}
       });
     }
-
+    
+//    if (isNetworkAvailable()) {
+//      if (DEBUG) {
+//        Log.d(LOG_TAG, "Network available, attempting to connect if possible...");
+//      }
+//      reconnectIfNecessary();
+//    }
+  }
+  
+  /**
+   * Checks the current connectivity and reconnects if it is required.
+   */
+  private synchronized void reconnectIfNecessary() {
+    if (DEBUG) {
+      Log.d(LOG_TAG, "Reconnect if necessary called...");
+    }
+    if (mStarted && mClient == null) {
+      connect(mIpAdress, mPort);
+    }
+  }
+  
+  /**
+   * Checks network info
+   *
+   * @return boolean true if we are connected false otherwise
+   */
+  private boolean isNetworkAvailable() {
+    NetworkInfo info = mConnectivityManager.getActiveNetworkInfo();
+    return info != null && info.isConnected();
   }
 
   /**

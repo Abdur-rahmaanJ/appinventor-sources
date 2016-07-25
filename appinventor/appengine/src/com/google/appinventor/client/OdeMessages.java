@@ -6335,9 +6335,13 @@ public interface OdeMessages extends Messages {
   @Description("")
   String SubscribeMethods();
 
-  @DefaultMessage("Test")
+  @DefaultMessage("High")
   @Description("")
-  String TestMethods();
+  String HighMethods();
+
+  @DefaultMessage("Low")
+  @Description("")
+  String LowMethods();
 
   @DefaultMessage("Toggle")
   @Description("")

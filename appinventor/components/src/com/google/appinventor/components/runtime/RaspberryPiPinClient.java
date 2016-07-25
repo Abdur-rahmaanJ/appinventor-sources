@@ -169,7 +169,6 @@ public class RaspberryPiPinClient extends AndroidNonvisibleComponent implements 
     return pullResistance;
   }
 
-  @DesignerProperty(editorType = PropertyTypeConstants.PROPERTY_TYPE_STRING)
   @SimpleProperty(description = "Designates the type of device connected to the pin. For e.g. LED, TemperatureSensor",
       userVisible = true)
   public void DeviceName(String pDeviceName) {
@@ -286,6 +285,24 @@ public class RaspberryPiPinClient extends AndroidNonvisibleComponent implements 
     if (DEBUG) {
       Log.d(LOG_TAG, "Unsubscribed to messages on topic " + topic);
     }
+  }
+
+  /**
+   * Sets the pin state to high/true, and broadcasts the message for the
+   * RaspberryPiServer to pick up.
+   */
+  @SimpleFunction(description = "Sets the pinstate to HIGH.")
+  public void High() {
+    PinState(true);
+  }
+
+  /**
+   * Sets the pin state to low/false, and broadcasts the message for the
+   * RaspberryPiServer to pick up.
+   */
+  @SimpleFunction(description = "Sets the pinstate to Low.")
+  public void Low() {
+    PinState(false);
   }
 
   /**
@@ -444,9 +461,9 @@ public class RaspberryPiPinClient extends AndroidNonvisibleComponent implements 
     myPin.label = deviceName;
 
     if (myPin.isInvalid()) {
-      throw new ConnectionError("All the required properties for the RaspberryPiPinClient not set. " +
-          "Please check pinNumber, pinDirection, and the raspberryPiServer. " +
-          "The raspberryPiServer should have a model set.");
+      throw new ConnectionError("All the required properties for the RaspberryPiPinClient not set. "
+          + "Please check pinNumber, pinDirection, and the raspberryPiServer. "
+          + "The raspberryPiServer should have a model set, and that should be the same one as your physical device.");
     }
     return myPin;
   }
