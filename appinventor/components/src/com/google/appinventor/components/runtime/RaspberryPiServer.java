@@ -24,13 +24,14 @@ import com.google.appinventor.components.common.YaVersion;
 import com.google.appinventor.components.runtime.errors.ConnectionError;
 
 /**
- * RaspberryPiServer models the Raspberry Pi and acts as an MQTT broker that
- * relays messages between the RaspberryPiPinClients and other external sources.
- * The broker, and thus the RaspberryPiServer has an IP address that clients can
- * connect via TCP/IP. For the RaspberryPi component, it is necessary to have
- * the MQTT clients such as sensors and LED outputs to be subscribed to certain
- * topics via the broker. The App Inventor developer can opt to connect to
- * external MQTT brokers or run an MQTT broker on the Raspberry PI device.
+ * Non-visible component that models the Raspberry Pi and can act as the MQTT
+ * broker that relays messages between the RaspberryPiPinClients and other
+ * external sources. The broker, and thus the RaspberryPiServer has an IP
+ * address that clients can connect via TCP/IP. For the RaspberryPi component,
+ * it is necessary to have the MQTT clients such as sensors and LED outputs to
+ * be subscribed to certain topics via the broker. The App Inventor developer
+ * can opt to connect to external MQTT brokers or run an MQTT broker on the
+ * Raspberry PI device.
  * 
  * @author Thilanka Munasinghe (thilankawillbe@gmail.com)
  */
@@ -90,7 +91,7 @@ public class RaspberryPiServer extends AndroidNonvisibleComponent implements Com
   @DesignerProperty(editorType = PropertyTypeConstants.PROPERTY_TYPE_STRING,
       defaultValue = Component.RASPBERRYPI_SERVER_VALUE)
   @SimpleProperty(description = "Sets the model version of the Raspberry Pi. "
-      + "Depending on this model input, we will perform pin validation in the RaspberryPiPinClient inputs.",
+      + "Depending on this model input, there will be pin validation in the RaspberryPiPinClient inputs.",
       userVisible = true)
   public void Model(String pModel) {
     model = pModel;
@@ -124,8 +125,9 @@ public class RaspberryPiServer extends AndroidNonvisibleComponent implements Com
    */
   @DesignerProperty(editorType = PropertyTypeConstants.PROPERTY_TYPE_STRING,
       defaultValue = Component.RASPBERRYPI_SERVER_IPV4_VALUE)
-  @SimpleProperty(description = "The IP Address or the server address of the Raspberry Pi device.  "
-      + "The MQTT broker should be reachable via this address.",
+  @SimpleProperty(description = "The IPAddress or the server address of the Raspberry "
+      + "Pi device acting as an MQTT broker or any other external MQTT broker "
+      + "(such as iot.eclipse.org:1883) used in the communication.",
       userVisible = true)
   public void ServerAddress(String pServerAddress) {
     serverAddress = pServerAddress;
@@ -182,7 +184,7 @@ public class RaspberryPiServer extends AndroidNonvisibleComponent implements Com
   @DesignerProperty(editorType = PropertyTypeConstants.PROPERTY_TYPE_NON_NEGATIVE_INTEGER,
       defaultValue = Component.RASPBERRYPI_SERVER_QOS_VALUE + "")
   @SimpleProperty(description = "Quality of Service parameter for a RaspberryPi Server broker, "
-      + "which guarantees the received status of the messages.",
+      + "which guarantees the received status of the messages. Defaults to 2",
       userVisible = true)
   public void Qos(int pQos) {
     if (pQos > 2) {
@@ -212,7 +214,9 @@ public class RaspberryPiServer extends AndroidNonvisibleComponent implements Com
    * @param brokerAddress
    * @param brokerPort
    */
-  @SimpleFunction(description = "Returns true if the client with the given pin number is connected.")
+  @SimpleFunction(description = "Initializes the RaspberryPiServer component with the given "
+      + "RaspberryPi Model, MQTT broker address, port and the identifier given by the companion app "
+      + "running on the RaspberryPi device.")
   public void Initialize(String model, String brokerAddress, int brokerPort, String identifier) {
     if (DEBUG) {
       Log.d(LOG_TAG, "Initializing the RaspberryPiServer properties...");
@@ -251,7 +255,7 @@ public class RaspberryPiServer extends AndroidNonvisibleComponent implements Com
   }
 
   /**
-   * Determines the status of the RaspberryPi.
+   * Determines the status of the RaspberryPi GPIO Provider.
    * 
    * @return true if the RaspberryPi GPIO provider has been shutdown.
    */
@@ -281,8 +285,8 @@ public class RaspberryPiServer extends AndroidNonvisibleComponent implements Com
    * @return the number of clients that were registered with the RaspberryPi
    *         broker, but are now disconnected.
    */
-  @SimpleFunction(description = "Returns the number of clients that were registered with the RaspberryPi broker, " +
-      "but are now disconnected.")
+  @SimpleFunction(description = "Returns the number of clients that were once "
+      + "registered with the RaspberryPi broker, but are now disconnected.")
   public int DisconnectedClients() {
     if (DEBUG) {
       Log.d(LOG_TAG, "Getting the disconnected clients...");
@@ -309,11 +313,11 @@ public class RaspberryPiServer extends AndroidNonvisibleComponent implements Com
   }
  
   /**
-   * Event handler when RaspberryPiServer has shutdown.
+   * Indicates that the RaspberryPiServer has shutdown.
    * 
    * @return true when the server has shutdown.
    */
-  @SimpleEvent(description = "Event handler when RaspberryPiServer has shutdown.")
+  @SimpleEvent(description = "Indicates that the RaspberryPiServer has shutdown.")
   public boolean HasShutdown() {
     if (DEBUG) {
       Log.d(LOG_TAG, "Handle an event if the RaspberryPi Server has shutdown.");
@@ -325,11 +329,11 @@ public class RaspberryPiServer extends AndroidNonvisibleComponent implements Com
   }
 
   /**
-   * Event handler when a certain client attached to a pin has connected.
+   * Indicates that a certain client attached to the given pin has connected.
    * 
    * @return true when the given client has connected.
    */
-  @SimpleEvent(description = "Event handler when a certain client has connected.")
+  @SimpleEvent(description = "Indicates that a certain client attached to the given pin has connected.")
   public boolean ClientConnected(int pin) {
     if (DEBUG) {
       Log.d(LOG_TAG, "Handle an event if a client has connected.");
@@ -340,7 +344,13 @@ public class RaspberryPiServer extends AndroidNonvisibleComponent implements Com
     return false;
   }
 
-  @SimpleEvent(description = "Event handler when a certain client attached to a pin has disconnected")
+  /**
+   * Indicates that a certain client attached to the given pin has disconnected.
+   * 
+   * @param pin
+   * @return true if the given pin has an active client
+   */
+  @SimpleEvent(description = "Indicates that a certain client attached to the given pin has disconnected.")
   public boolean ClientDisconnected(int pin) {
     if (DEBUG) {
       Log.d(LOG_TAG, "Handle an event if a client has diconnected.");
@@ -351,8 +361,14 @@ public class RaspberryPiServer extends AndroidNonvisibleComponent implements Com
     return false;
   }
 
+  /**
+   * Indicates that a message is received through MQTT.
+   * 
+   * @param topic
+   * @param message
+   */
   @Override
-  @SimpleEvent(description = "Event handler when a message is received through MQTT.")
+  @SimpleEvent(description = "Indicates that a message is received through MQTT.")
   public void MqttMessageReceived(String topic, String message) {
     if (DEBUG) {
       Log.d(LOG_TAG, "Mqtt Message " + message + " received on subject " + topic + ".");
@@ -362,8 +378,15 @@ public class RaspberryPiServer extends AndroidNonvisibleComponent implements Com
     }
   }
 
+  /**
+   * Indicates that a given message belonging to the given topics is sent
+   * through MQTT.
+   * 
+   * @param topics
+   * @param message
+   */
   @Override
-  @SimpleEvent(description = "Event handler when a message is sent through MQTT.")
+  @SimpleEvent(description = "Indicates that a given message belonging to the given topics is sent through MQTT.")
   public void MqttMessageSent(List<String> topics, String message) {
     if (DEBUG) {
       StringBuilder topicBuilder = new StringBuilder();
@@ -378,8 +401,13 @@ public class RaspberryPiServer extends AndroidNonvisibleComponent implements Com
     }
   }
 
+  /**
+   * Indicates that the MQTT connection was lost.
+   * 
+   * @param error
+   */
   @Override
-  @SimpleEvent(description = "Event handler when a message the MQTT connection is lost.")
+  @SimpleEvent(description = "Indicates that the MQTT connection was lost.")
   public void MqttConnectionLost(String error) {
     if (DEBUG) {
       Log.d(LOG_TAG, "Connection via MQTT lost due to this error: " + error);
@@ -395,7 +423,7 @@ public class RaspberryPiServer extends AndroidNonvisibleComponent implements Com
         + ", qos:" + qos + "]";
   }
 
-  public String getInternalTopic() {
+  protected String getInternalTopic() {
     StringBuilder topicBuilder = new StringBuilder();
     topicBuilder.append(Topic.INTERNAL.toString());
     topicBuilder.append(identifier);

@@ -6403,7 +6403,7 @@ public interface OdeMessages extends Messages {
   @Description("")
   String DisconnectedClientsMethods();
 
-  @DefaultMessage("HasPinMethods")
+  @DefaultMessage("HasPin")
   @Description("")
   String HasPinMethods();
   
