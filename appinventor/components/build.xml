@@ -134,6 +134,9 @@
         <pathelement location="${lib.dir}/kawa/kawa-1.11-modified.jar" />
         <pathelement location="${lib.dir}/acra/acra-4.4.0.jar" />
         <pathelement location="${lib.dir}/guava/guava-14.0.1.jar" />
+        <pathelement location="${lib.dir}/iot/org.eclipse.paho.client.mqttv3-1.1.1.jar" />
+        <pathelement location="${lib.dir}/iot/androidthings-messages-0.0.1-SNAPSHOT.jar" />
+                            
         <!-- Conditionally included libraries -->
         <pathelement location="${lib.dir}/twitter/twitter4j-core-3.0.5.jar" />
         <pathelement location="${lib.dir}/twitter/twitter4j-media-support-3.0.5.jar" />
@@ -257,6 +260,8 @@
           <pathelement location="${lib.dir}/oauth/google-http-client-android3-1.10.3-beta.jar" />
           <pathelement location="${lib.dir}/oauth/google-oauth-client-1.10.1-beta.jar" />
           <pathelement location="${lib.dir}/guava/guava-14.0.1.jar" />
+          <pathelement location="${lib.dir}/iot/org.eclipse.paho.client.mqttv3-1.1.1.jar" />
+          <pathelement location="${lib.dir}/iot/androidthings-messages-0.0.1-SNAPSHOT.jar" />
         </classpath>
         <compilerarg line="-processorpath ${local.build.dir}/AnnotationProcessors.jar"/>
         <compilerarg line="-processor @{apt-processor}" />
