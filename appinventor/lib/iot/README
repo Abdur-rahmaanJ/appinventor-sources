@@ -1,0 +1,7 @@
+These libraries are required for the Android Things Integration on App Inventor. This project is done by Thilanka Munasinghe (thilankawillbe@gmail.com) as part of Google Summer of Code 2017, under the guidance of Andrew McKinney.
+
+The Eclipse Paho Client library was downloaded from:
+https://mvnrepository.com/artifact/org.eclipse.paho/org.eclipse.paho.client.mqttv3/1.1.1
+
+The Android Things Library was contributed by Thilanka Munasinghe, and the source code is available at:
+https://github.com/thilankam/androidthings-messages
