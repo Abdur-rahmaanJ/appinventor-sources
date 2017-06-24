@@ -90,7 +90,7 @@ public class AndroidThingsBoard extends AndroidNonvisibleComponent
    * supported platforms are Intel Edison, Intel Joule, NXP i.MX6UL, NXP i.MX7D
    * and RaspberryPi 3.
    *
-   * @param pHardwarePlatform
+   * @param hardwarePlatform
    */
   @DesignerProperty(editorType = PropertyTypeConstants.PROPERTY_TYPE_STRING,
       defaultValue = DEFAULT_HARDWARE_PLATFORM)
@@ -98,22 +98,22 @@ public class AndroidThingsBoard extends AndroidNonvisibleComponent
       + "Platform such as Intel Edison, Intel Joule, NXP i.MX6UL, NXP i.MX7D "
       + "or RaspberryPi 3.",
       userVisible = true)
-  public void HardwarePlatform(String pHardwarePlatform) {
-    mHardwarePlatform = pHardwarePlatform;
+  public void HardwarePlatform(String hardwarePlatform) {
+    mHardwarePlatform = hardwarePlatform;
   }
 
   /**
    * Set the string that uniquely identifies the Android Things board that is
    * being configured by the app.
    *
-   * @param pBoardIdentifier
+   * @param boardIdentifier
    */
   @DesignerProperty(editorType = PropertyTypeConstants.PROPERTY_TYPE_STRING, 
       defaultValue = DEFAULT_BOARD_IDENTIFIER)
   @SimpleProperty(description = "Sets the string that uniquely identifies the "
       + "Android Things board that is being configured by the app.", userVisible = true)
-  public void BoardIdentifier(String pBoardIdentifier) {
-    mBoardIdentifier = pBoardIdentifier;
+  public void BoardIdentifier(String boardIdentifier) {
+    mBoardIdentifier = boardIdentifier;
   }
 
   /**
@@ -145,7 +145,7 @@ public class AndroidThingsBoard extends AndroidNonvisibleComponent
    * The ipv4 address of the Messaging Server Host. Typically, an MQTT broker
    * would be hosted on this host.
    * 
-   * @param pMessagingHost
+   * @param messagingHost
    *          the server that runs the messaging service.
    */
   @DesignerProperty(editorType = PropertyTypeConstants.PROPERTY_TYPE_STRING,
@@ -154,8 +154,8 @@ public class AndroidThingsBoard extends AndroidNonvisibleComponent
       + "acting as an MQTT broker or any other external MQTT broker "
       + "(such as iot.eclipse.org:1883) used in the communication.",
       userVisible = true)
-  public void MessagingHost(String pMessagingHost) {
-    mMessagingHost = pMessagingHost;
+  public void MessagingHost(String messagingHost) {
+    mMessagingHost = messagingHost;
   }
 
   /**
@@ -173,17 +173,17 @@ public class AndroidThingsBoard extends AndroidNonvisibleComponent
   /**
    * Returns the TCP/IP port that the Messaging Broker is running on.
    * 
-   * @param pPort
+   * @param port
    */
   @DesignerProperty(editorType = PropertyTypeConstants.PROPERTY_TYPE_NON_NEGATIVE_INTEGER,
       defaultValue = DEFAULT_MESSAGING_PORT_VALUE + "")
   @SimpleProperty(description = "Returns the TCP/IP port that the Messaging Broker is running on.",
       userVisible = true)
-  public void MessagingPort(int pPort) {
-    if (pPort >= 1024 && pPort <= 65535) {
-      mMessagingPort = pPort;
+  public void MessagingPort(int port) {
+    if (port >= 1024 && port <= 65535) {
+      mMessagingPort = port;
     } else {
-      throw new ConnectionError("Please enter a valid port number. You entered " + pPort);
+      throw new ConnectionError("Please enter a valid port number. You entered " + port);
     }
   }
 
@@ -203,22 +203,22 @@ public class AndroidThingsBoard extends AndroidNonvisibleComponent
   /**
    * Initializes the Android Things Board to send and receive MQTT messages.
    * 
-   * @param pHardwarePlatform
-   * @param pMessagingHost
-   * @param pMessagingPort
+   * @param hardwarePlatform
+   * @param messagingHost
+   * @param messagingPort
    */
   @SimpleFunction(description = "Initializes the AndroidThingsBoard component "
       + "with the given Hardware Platform, Messaging Host, Port and the identifier "
       + "given by the companion app running on the AndroidThings device.")
-  public void Initialize(String pIdentifier, String pHardwarePlatform,
-      String pMessagingHost, int pMessagingPort) {
+  public void Initialize(String identifier, String hardwarePlatform,
+      String messagingHost, int messagingPort) {
     if (DEBUG) {
       Log.d(LOG_TAG, "Initializing the AndroidThingsBoard's properties...");
     }
-    mBoardIdentifier = pIdentifier;
-    mHardwarePlatform = pHardwarePlatform;
-    mMessagingHost = pMessagingHost;
-    mMessagingPort = pMessagingPort;
+    mBoardIdentifier = identifier;
+    mHardwarePlatform = hardwarePlatform;
+    mMessagingHost = messagingHost;
+    mMessagingPort = messagingPort;
   }
  
   /**
@@ -295,12 +295,12 @@ public class AndroidThingsBoard extends AndroidNonvisibleComponent
   /**
    * Returns true if the given pin name is connected to a device.
    * 
-   * @param pPinName
+   * @param pinName
    * @return true if the client with the given pin name is connected.
    */
   @SimpleFunction(description = "Returns true if the given pin name is "
       + "connected to a device.")
-  public boolean IsPinConnected(String pPinName) {
+  public boolean IsPinConnected(String pinName) {
     if (DEBUG) {
       Log.d(LOG_TAG, "Checking if the client is connected...");
       Log.d(LOG_TAG, "To be implemented.");
@@ -332,7 +332,7 @@ public class AndroidThingsBoard extends AndroidNonvisibleComponent
    */
   @SimpleEvent(description = "Indicates whether the given pin has connected to a"
       + " device.")
-  public boolean PinConnected(String pPinName) {
+  public boolean PinConnected(String pinName) {
     if (DEBUG) {
       Log.d(LOG_TAG, "Handle an event if a client has connected.");
       Log.d(LOG_TAG, "To be implemented.");
@@ -345,12 +345,12 @@ public class AndroidThingsBoard extends AndroidNonvisibleComponent
    * Indicates whether the given pin has disconnected from the device that was
    * previously attached to.
    * 
-   * @param pPinName
+   * @param pinName
    * @return true if the given pin has an active client
    */
   @SimpleEvent(description = "Indicates whether the given pin has disconnected "
       + "from the device that was previously attached to..")
-  public boolean PinDisconnected(String pPinName) {
+  public boolean PinDisconnected(String pinName) {
     if (DEBUG) {
       Log.d(LOG_TAG, "Handle an event if a client has diconnected.");
       Log.d(LOG_TAG, "To be implemented. ");

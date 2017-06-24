@@ -90,7 +90,8 @@ public class AndroidThingsPin extends AndroidNonvisibleComponent implements Comp
   /**
    * Creates a new AndroidNonvisibleComponent.
    *
-   * @param pContainer the container that the component will be placed in
+   * @param pContainer
+   *          the container that the component will be placed in
    */
   public AndroidThingsPin(ComponentContainer pContainer) {
     super(pContainer.$form());
@@ -112,8 +113,8 @@ public class AndroidThingsPin extends AndroidNonvisibleComponent implements Comp
   @SimpleProperty(description = "The designated name for the Pin as specified in "
       + "the Android Things pinout.",
       userVisible = true)
-  public void PinName(String pPinName) {
-    mPinName = pPinName;
+  public void PinName(String pinName) {
+    mPinName = pinName;
   }
 
   @SimpleProperty(description = "The assigned number for the pin in the Android "
@@ -126,12 +127,12 @@ public class AndroidThingsPin extends AndroidNonvisibleComponent implements Comp
 
   @SimpleProperty(description = "Designates whether the pin is on or off.",
       userVisible = true)
-  public void PinState(boolean pPinState) {
-    mIsOn = pPinState;
+  public void PinState(boolean pinState) {
+    mIsOn = pinState;
     if (mPinName == null || mPinName.isEmpty()) {
       throw new ConnectionError("Pin Name not set!");
     }
-    mPinState = pPinState ? PinValue.HIGH : PinValue.LOW;
+    mPinState = pinState ? PinValue.HIGH : PinValue.LOW;
 
     HeaderPin myPin = constructHeaderPin(PinProperty.PIN_STATE);
     String message = Message.constructPinMessage(myPin);
@@ -156,8 +157,8 @@ public class AndroidThingsPin extends AndroidNonvisibleComponent implements Comp
   }
 
   @SimpleProperty(description = "Designates what mode this pin is in.", userVisible = true)
-  public void PinMode(int pPinMode) {
-    mPinMode = pPinMode;
+  public void PinMode(int pinMode) {
+    mPinMode = pinMode;
   }
 
   @SimpleProperty(description = "Designates what mode this pin is in.", userVisible = true)
@@ -167,8 +168,8 @@ public class AndroidThingsPin extends AndroidNonvisibleComponent implements Comp
 
   @SimpleProperty(description = "Designates what type of a resistor is attached to this pin.",
       userVisible = true)
-  public void PullResistance(int pPullResistance) {
-    mPullResistance = pPullResistance;
+  public void PullResistance(int pullResistance) {
+    mPullResistance = pullResistance;
   }
 
   @SimpleProperty(description = "Designates what type of a resistor is attached to this pin.",
@@ -183,8 +184,8 @@ public class AndroidThingsPin extends AndroidNonvisibleComponent implements Comp
   @SimpleProperty(description = "Designates the type of device connected to the pin. "
       + "For e.g. LED, TemperatureSensor",
       userVisible = true)
-  public void ConnectedDeviceName(String pConnectedDeviceName) {
-    mConnectedDeviceName = pConnectedDeviceName;
+  public void ConnectedDeviceName(String connectedDeviceName) {
+    mConnectedDeviceName = connectedDeviceName;
   }
 
   @SimpleProperty(description = "Designates the type of device connected to the pin. "
@@ -199,8 +200,8 @@ public class AndroidThingsPin extends AndroidNonvisibleComponent implements Comp
       + "if the pin is attached to a temperature sensor, the topic can be "
       + "'temperature'.",
       userVisible = true)
-  public void Topic(String pTopic) {
-    mTopic = pTopic;
+  public void Topic(String topic) {
+    mTopic = topic;
   }
 
   @SimpleProperty(description = "The topic of interest for this pin. For e.g. "
@@ -216,8 +217,8 @@ public class AndroidThingsPin extends AndroidNonvisibleComponent implements Comp
       + "endpoint device attached to the pin. For e.g. a TemperatureSensor can "
       + "publish '80' as the payload.",
       userVisible = true)
-  public void Message(String pMessage) {
-    mMessage = pMessage;
+  public void Message(String message) {
+    mMessage = message;
   }
 
   @SimpleProperty(description = "The message either sent to or received from the "
@@ -231,8 +232,8 @@ public class AndroidThingsPin extends AndroidNonvisibleComponent implements Comp
 
   @SimpleProperty(description = "The topic to publish the lastWillMessage.",
       userVisible = true)
-  public void LastWillTopic(String pLastWillTopic) {
-    mLastWillTopic = pLastWillTopic;
+  public void LastWillTopic(String lastWillTopic) {
+    mLastWillTopic = lastWillTopic;
   }
 
   @SimpleProperty(description = "The topic to publish the lastWillMessage.",
@@ -244,8 +245,8 @@ public class AndroidThingsPin extends AndroidNonvisibleComponent implements Comp
 
   @SimpleProperty(description = "Message to be sent in the event the client disconnects.",
       userVisible = true)
-  public void LastWillMessage(String pLastWillMessage) {
-    mLastWillMessage = pLastWillMessage;
+  public void LastWillMessage(String lastWillMessage) {
+    mLastWillMessage = lastWillMessage;
   }
 
   @SimpleProperty(description = "Message to be sent in the event the client disconnects.",
@@ -306,19 +307,19 @@ public class AndroidThingsPin extends AndroidNonvisibleComponent implements Comp
    * or some other input is connected to the Android Things Board, a message is
    * sent announcing the pin that was registered.
    * 
-   * @param pAndroidThingsBoard
-   * @param pIsOutput
+   * @param androidThingsBoard
+   * @param isOutput
    */
   @SimpleFunction(description = "Registers this pin with the AndroidThingsBoard "
       + "and designates the directionality of the pin, i.e. whether it is input "
       + "or output.")
-  public void Register(String pPinName, boolean pIsOutput,
-      AndroidThingsBoard pAndroidThingsBoard) {
-    mPinName = pPinName;
-    mPinDirection = pIsOutput ? PinDirection.OUT : PinDirection.IN;
-    mAndroidThingsBoard = pAndroidThingsBoard;
+  public void Register(String pinName, boolean isOutput,
+      AndroidThingsBoard androidThingsBoard) {
+    mPinName = pinName;
+    mPinDirection = isOutput ? PinDirection.OUT : PinDirection.IN;
+    mAndroidThingsBoard = androidThingsBoard;
     if (DEBUG) {
-      Log.d(LOG_TAG, "Registered " + this + " to " + pAndroidThingsBoard
+      Log.d(LOG_TAG, "Registered " + this + " to " + androidThingsBoard
           + " with direction " + mPinDirection);
     }
 
@@ -343,13 +344,13 @@ public class AndroidThingsPin extends AndroidNonvisibleComponent implements Comp
             + " with this MQTT message: " + message);
       }
       mAndroidThingsMessagingService
-          .publish(pAndroidThingsBoard.getInternalTopic(), message);
+          .publish(androidThingsBoard.getInternalTopic(), message);
       if (DEBUG) {
         Log.d(LOG_TAG, "Registering Pin " + mPinName
             + " with this " + AndroidThingsBoard.class.getSimpleName()
             + " with this MQTT message: " + message);
       }
-      Subscribe(pAndroidThingsBoard.getInternalTopic());
+      Subscribe(androidThingsBoard.getInternalTopic());
     }
   }
 
@@ -386,12 +387,14 @@ public class AndroidThingsPin extends AndroidNonvisibleComponent implements Comp
 
   @Override
   @SimpleEvent(description = "Event handler when a message is received through MQTT.")
-  public void MessageReceived(String pTopic, String pMessage) {
+  public void MessageReceived(String topic, String message) {
     if (DEBUG) {
-      Log.d(LOG_TAG, "Mqtt Message " + pMessage + " received on subject " + pTopic + ".");
+      Log.d(LOG_TAG,
+          "Mqtt Message " + message + " received on subject " + topic + ".");
     }
-    if (mPinDirection.equals(PinDirection.IN) && pTopic.equals(mAndroidThingsBoard.getInternalTopic())) {
-      HeaderPin headerPin = Message.deconstrctPinMessage(pMessage);
+    if (mPinDirection.equals(PinDirection.IN)
+        && topic.equals(mAndroidThingsBoard.getInternalTopic())) {
+      HeaderPin headerPin = Message.deconstrctPinMessage(message);
       if (DEBUG) {
               Log.d(LOG_TAG, "Received internal message for pin =" + headerPin);
       }
@@ -417,24 +420,25 @@ public class AndroidThingsPin extends AndroidNonvisibleComponent implements Comp
      * Finally, we need to dispatch this message regardless of the topic of the
      * message.
      */
-    if (pTopic != null && pMessage != null && pMessage.length() > 0) {
-      EventDispatcher.dispatchEvent(this, "MqttMessageReceived", pTopic, pMessage);
+    if (topic != null && message != null && message.length() > 0) {
+      EventDispatcher.dispatchEvent(this, "MqttMessageReceived", topic,
+          message);
     }
   }
 
   @Override
   @SimpleEvent(description = "Event handler when a message is sent through MQTT.")
-  public void MessageSent(List<String> pTopics, String pMessage) {
+  public void MessageSent(List<String> topics, String message) {
     if (DEBUG) {
       StringBuilder topicBuilder = new StringBuilder();
-      for (String topic : pTopics) {
+      for (String topic : topics) {
               topicBuilder.append(topic);
       }
       String allTopics = topicBuilder.toString();
-      Log.d(LOG_TAG, "Mqtt Message " + pMessage + " sent on subjects " + allTopics + ".");
+      Log.d(LOG_TAG, "Mqtt Message " + message + " sent on subjects " + allTopics + ".");
     }
-    if (pTopics != null && pTopics.size() > 0 && pMessage != null && pMessage.length() > 0) {
-      EventDispatcher.dispatchEvent(this, "MqttMessageSent", pTopics, pMessage);
+    if (topics != null && topics.size() > 0 && message != null && message.length() > 0) {
+      EventDispatcher.dispatchEvent(this, "MqttMessageSent", topics, message);
     }
   }
 
