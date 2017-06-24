@@ -85,6 +85,7 @@
     <copy toFile="${classes.files.dir}/core.jar" file="${lib.dir}/QRGenerator/core.jar" />
     <copy toFile="${classes.files.dir}/android.jar" file="${lib.dir}/android/5.1.1/android.jar" />
     <copy toFile="${classes.files.dir}/dx.jar" file="${lib.dir}/android/tools/dx.jar" />
+    <copy toFile="${classes.files.dir}/org.eclipse.paho.android.service-1.1.1.jar" file="${lib.dir}/iot/org.eclipse.paho.android.service-1.1.1.jar" />
     <copy toFile="${classes.files.dir}/org.eclipse.paho.client.mqttv3-1.1.1.jar" file="${lib.dir}/iot/org.eclipse.paho.client.mqttv3-1.1.1.jar" />
     <copy toFile="${classes.files.dir}/androidthings-messages-0.0.1-SNAPSHOT.jar" file="${lib.dir}/iot/androidthings-messages-0.0.1-SNAPSHOT.jar" />
 

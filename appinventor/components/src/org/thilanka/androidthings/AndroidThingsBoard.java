@@ -5,8 +5,6 @@ import java.util.List;
 import org.thilanka.messaging.domain.Action;
 import org.thilanka.messaging.domain.Topic;
 import org.thilanka.messaging.error.ConnectionError;
-import org.thilanka.messaging.mqtt.AndroidThingsMessageListener;
-import org.thilanka.messaging.mqtt.AndroidThingsMessagingService;
 
 import com.google.appinventor.components.annotations.DesignerComponent;
 import com.google.appinventor.components.annotations.DesignerProperty;
@@ -38,13 +36,13 @@ import android.util.Log;
 @DesignerComponent(description = "<p>Non-visible component that models the "
     + "Android Things Board connected to an MQTT broker. This class acts as a "
     + "mediator that relays messages between AndroidThingsPin objects.</p>",
-    category = ComponentCategory.EXTENSION,
+    category = ComponentCategory.EXPERIMENTAL,
     nonVisible = true,
     iconName = "images/extension.png", 
     version = 1)
 @SimpleObject(external = true)
 @UsesPermissions(permissionNames = "android.permission.INTERNET")
-@UsesLibraries(libraries = "org.eclipse.paho.client.mqttv3-1.1.1.jar, gson-2.1.jar,"
+@UsesLibraries(libraries = "org.eclipse.paho.android.service-1.1.1.jar, org.eclipse.paho.client.mqttv3-1.1.1.jar, gson-2.1.jar,"
     + " androidthings-messages-0.0.1-SNAPSHOT.jar")
 public class AndroidThingsBoard extends AndroidNonvisibleComponent
     implements Component, AndroidThingsMessageListener {

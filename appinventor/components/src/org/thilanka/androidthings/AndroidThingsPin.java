@@ -9,8 +9,6 @@ import org.thilanka.device.pin.PinValue;
 import org.thilanka.messaging.domain.HeaderPin;
 import org.thilanka.messaging.domain.Message;
 import org.thilanka.messaging.error.ConnectionError;
-import org.thilanka.messaging.mqtt.AndroidThingsMessageListener;
-import org.thilanka.messaging.mqtt.AndroidThingsMessagingService;
 
 import com.google.appinventor.components.annotations.DesignerComponent;
 import com.google.appinventor.components.annotations.DesignerProperty;
@@ -47,13 +45,13 @@ import android.util.Log;
 @DesignerComponent(version = 1,
     description = "<p>A non-visible component that models any device that can" +
         " be attached to a pin of an Android Things supported Hardware Platfrom.</p>",
-    category = ComponentCategory.EXTENSION,
+    category = ComponentCategory.EXPERIMENTAL,
     nonVisible = true,
     iconName = "images/extension.png")
 @SimpleObject(external = true)
 @UsesPermissions(permissionNames = "android.permission.INTERNET, " + "android.permission.WAKE_LOCK, "
     + "android.permission.ACCESS_NETWORK_STATE, " + "android.permission.WRITE_EXTERNAL_STORAGE")
-@UsesLibraries(libraries = "org.eclipse.paho.client.mqttv3-1.1.1.jar, gson-2.1.jar,"
+@UsesLibraries(libraries = "org.eclipse.paho.android.service-1.1.1.jar, org.eclipse.paho.client.mqttv3-1.1.1.jar, gson-2.1.jar,"
     + " androidthings-messages-0.0.1-SNAPSHOT.jar")
 public class AndroidThingsPin extends AndroidNonvisibleComponent implements Component, AndroidThingsMessageListener {
 
