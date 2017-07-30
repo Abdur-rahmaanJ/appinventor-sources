@@ -45,7 +45,7 @@ import android.util.Log;
 @DesignerComponent(version = 1,
     description = "<p>A non-visible component that models any device that can" +
         " be attached to a pin of an Android Things supported Hardware Platfrom.</p>",
-    category = ComponentCategory.EXPERIMENTAL,
+    category = ComponentCategory.EXTENSION,
     nonVisible = true,
     iconName = "images/extension.png")
 @SimpleObject(external = true)

@@ -36,7 +36,7 @@ import android.util.Log;
 @DesignerComponent(description = "<p>Non-visible component that models the "
     + "Android Things Board connected to an MQTT broker. This class acts as a "
     + "mediator that relays messages between AndroidThingsPin objects.</p>",
-    category = ComponentCategory.EXPERIMENTAL,
+    category = ComponentCategory.EXTENSION,
     nonVisible = true,
     iconName = "images/extension.png", 
     version = 1)
