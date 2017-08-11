@@ -6,6 +6,7 @@ import org.thilanka.device.board.AndroidThingsBoardFactory;
 import org.thilanka.device.pin.PinDirection;
 import org.thilanka.device.pin.PinProperty;
 import org.thilanka.device.pin.PinValue;
+import org.thilanka.messaging.domain.Action;
 import org.thilanka.messaging.domain.HeaderPin;
 import org.thilanka.messaging.domain.Message;
 import org.thilanka.messaging.error.ConnectionError;
@@ -134,7 +135,7 @@ public class AndroidThingsPin extends AndroidNonvisibleComponent implements Comp
     }
     mPinState = pinState ? PinValue.HIGH : PinValue.LOW;
 
-    HeaderPin myPin = constructHeaderPin(PinProperty.PIN_STATE);
+    HeaderPin myPin = constructHeaderPin(PinProperty.PIN_STATE, Action.EVENT);
     String message = Message.constructPinMessage(myPin);
 
     if (DEBUG) {
@@ -335,7 +336,8 @@ public class AndroidThingsPin extends AndroidNonvisibleComponent implements Comp
     }
 
     if (mPinDirection.equals(PinDirection.IN)) {
-      HeaderPin myPin = constructHeaderPin(PinProperty.REGISTER);
+      HeaderPin myPin =
+          constructHeaderPin(PinProperty.REGISTER, Action.REGISTER);
       String message = Message.constructPinMessage(myPin);
 
       if (DEBUG) {
@@ -468,8 +470,9 @@ public class AndroidThingsPin extends AndroidNonvisibleComponent implements Comp
     return true;
   }
 
-  private HeaderPin constructHeaderPin(PinProperty pProperty) {
+  private HeaderPin constructHeaderPin(PinProperty pProperty, Action pAction) {
     HeaderPin myPin = new HeaderPin();
+    myPin.setAction(pAction);
     myPin.setName(mPinName);
     myPin.setProperty(pProperty);
     myPin.setValue(mPinState);
