@@ -3,7 +3,6 @@ package org.thilanka.androidthings;
 import java.util.List;
 
 import org.thilanka.messaging.domain.Action;
-import org.thilanka.messaging.domain.Topic;
 import org.thilanka.messaging.error.ConnectionError;
 
 import com.google.appinventor.components.annotations.DesignerComponent;
@@ -86,7 +85,7 @@ public class AndroidThingsBoard extends AndroidNonvisibleComponent
   }
 
   /**
-   * The Supported Android Things Hardware Platform. As of June 2017, the
+   * The Supported Android Things Hardware Platform. As of August 2017, the
    * supported platforms are Intel Edison, Intel Joule, NXP i.MX6UL, NXP i.MX7D
    * and RaspberryPi 3.
    *
@@ -203,6 +202,7 @@ public class AndroidThingsBoard extends AndroidNonvisibleComponent
   /**
    * Initializes the Android Things Board to send and receive MQTT messages.
    * 
+   * @param identifier
    * @param hardwarePlatform
    * @param messagingHost
    * @param messagingPort
@@ -244,7 +244,7 @@ public class AndroidThingsBoard extends AndroidNonvisibleComponent
     }
     pShutdown = true;
     // TODO
-    mAndroidThingsMessagingService.publish(getInternalTopic(), Action.SHUTDOWN.name());
+    mAndroidThingsMessagingService.publish(mBoardIdentifier, Action.SHUTDOWN.name());
     if (DEBUG) {
       Log.d(LOG_TAG, "Completed shutting down the Android Things Board.");
     }
@@ -421,13 +421,6 @@ public class AndroidThingsBoard extends AndroidNonvisibleComponent
     return "RaspberryPiServer[ipv4Address:" + mMessagingHost + ", port:"
         + mMessagingPort
         + ", model:" + mHardwarePlatform + ", pins:" + mPins + "]";
-  }
-
-  protected String getInternalTopic() {
-    StringBuilder topicBuilder = new StringBuilder();
-    topicBuilder.append(Topic.INTERNAL.toString());
-    topicBuilder.append(mBoardIdentifier);
-    return topicBuilder.toString();
   }
 
 }

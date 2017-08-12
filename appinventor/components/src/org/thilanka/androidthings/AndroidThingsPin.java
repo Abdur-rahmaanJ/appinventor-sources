@@ -143,7 +143,7 @@ public class AndroidThingsPin extends AndroidNonvisibleComponent implements Comp
           + " with this MQTT message: " + message);
     }
     mAndroidThingsMessagingService
-        .publish(mAndroidThingsBoard.getInternalTopic(), message);
+        .publish(mAndroidThingsBoard.BoardIdentifier(), message);
     if (DEBUG) {
       Log.d(LOG_TAG, "Set Pin " + mPinName + " to " + myPin.getValue()
           + " with this MQTT message: " + message);
@@ -346,13 +346,13 @@ public class AndroidThingsPin extends AndroidNonvisibleComponent implements Comp
             + " with this MQTT message: " + message);
       }
       mAndroidThingsMessagingService
-          .publish(androidThingsBoard.getInternalTopic(), message);
+          .publish(androidThingsBoard.BoardIdentifier(), message);
       if (DEBUG) {
         Log.d(LOG_TAG, "Registering Pin " + mPinName
             + " with this " + AndroidThingsBoard.class.getSimpleName()
             + " with this MQTT message: " + message);
       }
-      Subscribe(androidThingsBoard.getInternalTopic());
+      Subscribe(androidThingsBoard.BoardIdentifier());
     }
   }
 
@@ -395,7 +395,7 @@ public class AndroidThingsPin extends AndroidNonvisibleComponent implements Comp
           "Mqtt Message " + message + " received on subject " + topic + ".");
     }
     if (mPinDirection.equals(PinDirection.IN)
-        && topic.equals(mAndroidThingsBoard.getInternalTopic())) {
+        && topic.equals(mAndroidThingsBoard.BoardIdentifier())) {
       HeaderPin headerPin = Message.deconstrctPinMessage(message);
       if (DEBUG) {
               Log.d(LOG_TAG, "Received internal message for pin =" + headerPin);
