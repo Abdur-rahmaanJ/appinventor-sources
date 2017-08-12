@@ -3,6 +3,7 @@ package org.thilanka.androidthings;
 import java.util.List;
 
 import org.thilanka.messaging.domain.Action;
+import org.thilanka.messaging.domain.Topic;
 import org.thilanka.messaging.error.ConnectionError;
 
 import com.google.appinventor.components.annotations.DesignerComponent;
@@ -28,7 +29,7 @@ import android.util.Log;
 /**
  * Non-visible component that models the Android Things Board connected to an
  * MQTT broker. This class acts as a mediator that relays messages between the
- * {@link AndroidThingsPin} objects.
+ * {@link AndroidThingsGPIO} objects.
  * 
  * @author Thilanka Munasinghe (thilankawillbe@gmail.com)
  */
@@ -416,9 +417,17 @@ public class AndroidThingsBoard extends AndroidNonvisibleComponent
     }
   }
 
+  public String getPublishTopic() {
+    return BoardIdentifier() + Topic.ANDROID_THINGS;
+  }
+
+  public String getSubscribeTopic() {
+    return BoardIdentifier() + Topic.APP_INVENTOR;
+  }
+
   @Override
   public String toString() {
-    return "RaspberryPiServer[ipv4Address:" + mMessagingHost + ", port:"
+    return "Android Things Board [ipv4Address:" + mMessagingHost + ", port:"
         + mMessagingPort
         + ", model:" + mHardwarePlatform + ", pins:" + mPins + "]";
   }

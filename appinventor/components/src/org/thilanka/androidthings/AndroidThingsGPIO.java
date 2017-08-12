@@ -7,8 +7,9 @@ import org.thilanka.device.pin.PinDirection;
 import org.thilanka.device.pin.PinProperty;
 import org.thilanka.device.pin.PinValue;
 import org.thilanka.messaging.domain.Action;
-import org.thilanka.messaging.domain.HeaderPin;
 import org.thilanka.messaging.domain.Message;
+import org.thilanka.messaging.domain.Payload;
+import org.thilanka.messaging.domain.PeripheralIO;
 import org.thilanka.messaging.error.ConnectionError;
 
 import com.google.appinventor.components.annotations.DesignerComponent;
@@ -32,7 +33,7 @@ import android.os.Handler;
 import android.util.Log;
 
 /**
- * {@link AndroidThingsPin} models any device attached to a GPIO pin of a Google
+ * {@link AndroidThingsGPIO} models any device attached to a GPIO pin of a Google
  * Android Things supported hardware platform. This also acts as an MQTT Client,
  * and will either publish or subscribe to certain topic(s). For example, a
  * temperature sensor attached to the board can publish to the topic
@@ -54,7 +55,7 @@ import android.util.Log;
     + "android.permission.ACCESS_NETWORK_STATE, " + "android.permission.WRITE_EXTERNAL_STORAGE")
 @UsesLibraries(libraries = "org.eclipse.paho.android.service-1.1.1.jar, org.eclipse.paho.client.mqttv3-1.1.1.jar, gson-2.1.jar,"
     + " androidthings-messages-0.0.1-SNAPSHOT.jar")
-public class AndroidThingsPin extends AndroidNonvisibleComponent implements Component, AndroidThingsMessageListener {
+public class AndroidThingsGPIO extends AndroidNonvisibleComponent implements Component, AndroidThingsMessageListener {
 
   // Component default values
   private static final String DEFAULT_PIN_NAME = "GPIO_34";
@@ -94,7 +95,7 @@ public class AndroidThingsPin extends AndroidNonvisibleComponent implements Comp
    * @param pContainer
    *          the container that the component will be placed in
    */
-  public AndroidThingsPin(ComponentContainer pContainer) {
+  public AndroidThingsGPIO(ComponentContainer pContainer) {
     super(pContainer.$form());
     if (DEBUG) {
       Log.d(LOG_TAG, "Inside the AppInventorAndroidThingsPinClient Constructor.");
@@ -135,15 +136,16 @@ public class AndroidThingsPin extends AndroidNonvisibleComponent implements Comp
     }
     mPinState = pinState ? PinValue.HIGH : PinValue.LOW;
 
-    HeaderPin myPin = constructHeaderPin(PinProperty.PIN_STATE, Action.EVENT);
-    String message = Message.constructPinMessage(myPin);
+    Payload myPin = constructPayload(PinProperty.PIN_STATE, Action.EVENT);
+    String message = Message.constructMessage(myPin);
 
     if (DEBUG) {
       Log.d(LOG_TAG, "Setting Pin " + mPinName + " to " + myPin.getValue()
           + " with this MQTT message: " + message);
     }
-    mAndroidThingsMessagingService
-        .publish(mAndroidThingsBoard.BoardIdentifier(), message);
+
+    Publish(mAndroidThingsBoard.getPublishTopic(), message);
+
     if (DEBUG) {
       Log.d(LOG_TAG, "Set Pin " + mPinName + " to " + myPin.getValue()
           + " with this MQTT message: " + message);
@@ -336,9 +338,9 @@ public class AndroidThingsPin extends AndroidNonvisibleComponent implements Comp
     }
 
     if (mPinDirection.equals(PinDirection.IN)) {
-      HeaderPin myPin =
-          constructHeaderPin(PinProperty.REGISTER, Action.REGISTER);
-      String message = Message.constructPinMessage(myPin);
+      Payload myPin =
+          constructPayload(PinProperty.REGISTER, Action.REGISTER);
+      String message = Message.constructMessage(myPin);
 
       if (DEBUG) {
         Log.d(LOG_TAG, "Registering Pin " + mPinName
@@ -352,7 +354,11 @@ public class AndroidThingsPin extends AndroidNonvisibleComponent implements Comp
             + " with this " + AndroidThingsBoard.class.getSimpleName()
             + " with this MQTT message: " + message);
       }
-      Subscribe(androidThingsBoard.BoardIdentifier());
+      /*
+       * The topic App Inventor should subscribe is in the form of
+       * <board_identifier>/appinventor
+       */
+      Subscribe(androidThingsBoard.getSubscribeTopic());
     }
   }
 
@@ -396,7 +402,7 @@ public class AndroidThingsPin extends AndroidNonvisibleComponent implements Comp
     }
     if (mPinDirection.equals(PinDirection.IN)
         && topic.equals(mAndroidThingsBoard.BoardIdentifier())) {
-      HeaderPin headerPin = Message.deconstrctPinMessage(message);
+      Payload headerPin = Message.deconstrctMessage(message);
       if (DEBUG) {
               Log.d(LOG_TAG, "Received internal message for pin =" + headerPin);
       }
@@ -462,7 +468,7 @@ public class AndroidThingsPin extends AndroidNonvisibleComponent implements Comp
     }
     if (mAndroidThingsBoard == null) {
       throw new ConnectionError(
-          "The " + AndroidThingsPin.class.getSimpleName()
+          "The " + AndroidThingsGPIO.class.getSimpleName()
               + " must be registered with a "
               + AndroidThingsBoard.class.getSimpleName()
               + " to perform the action.");
@@ -470,27 +476,28 @@ public class AndroidThingsPin extends AndroidNonvisibleComponent implements Comp
     return true;
   }
 
-  private HeaderPin constructHeaderPin(PinProperty pProperty, Action pAction) {
-    HeaderPin myPin = new HeaderPin();
-    myPin.setAction(pAction);
-    myPin.setName(mPinName);
-    myPin.setProperty(pProperty);
-    myPin.setValue(mPinState);
-    myPin.setDirection(mPinDirection);
+  private Payload constructPayload(PinProperty pProperty, Action pAction) {
+    Payload payload = new Payload();
+    payload.setPeripheralIO(PeripheralIO.GPIO);
+    payload.setAction(pAction);
+    payload.setName(mPinName);
+    payload.setProperty(pProperty);
+    payload.setValue(mPinState);
+    payload.setDirection(mPinDirection);
     String hardwarePlatform = mAndroidThingsBoard.HardwarePlatform();
-    myPin.setAndroidThingsBoard(
+    payload.setAndroidThingsBoard(
         AndroidThingsBoardFactory.getBoard(hardwarePlatform));
-    myPin.setLabel(mConnectedDeviceName);
+    payload.setLabel(mConnectedDeviceName);
 
-    if (myPin.isInvalid()) {
+    if (payload.isInvalid()) {
       throw new ConnectionError("All the required properties for the "
-          + AndroidThingsPin.class.getSimpleName() + " not set. "
+          + AndroidThingsGPIO.class.getSimpleName() + " not set. "
           + "Please check pinNumber, pinDirection, and the "
           + AndroidThingsBoard.class.getSimpleName() + " values. " + "The "
           + AndroidThingsBoard.class.getSimpleName()
           + " should have a hardware platform set.");
     }
-    return myPin;
+    return payload;
   }
 
   @Override
