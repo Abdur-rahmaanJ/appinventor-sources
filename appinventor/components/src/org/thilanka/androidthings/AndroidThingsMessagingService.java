@@ -184,7 +184,7 @@ public class AndroidThingsMessagingService implements MqttCallback {
   }
 
   /**
-   * Connects to the RaspberryPi Server which acts as the MQTT broker
+   * Connects to the Android Things board which acts as the MQTT broker
    *
    * @param pBrokerIPAddress
    *          The address of the broker (such as an ip address)
@@ -228,7 +228,7 @@ public class AndroidThingsMessagingService implements MqttCallback {
 
         } catch (MqttException e) {
           Log.e(LOG_TAG,
-              "Unable to connect to the AppInventorAndroidThingsSrever with address "
+              "Unable to connect to the AppInventorAndroidThingsServer with address "
                   + pIpAddress + ":" + pPort);
           e.printStackTrace();
         }

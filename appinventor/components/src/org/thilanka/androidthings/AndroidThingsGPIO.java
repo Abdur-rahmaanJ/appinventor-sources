@@ -2,7 +2,6 @@ package org.thilanka.androidthings;
 
 import java.util.List;
 
-import org.thilanka.device.board.AndroidThingsBoardFactory;
 import org.thilanka.device.pin.PinDirection;
 import org.thilanka.device.pin.PinProperty;
 import org.thilanka.device.pin.PinValue;
@@ -45,7 +44,8 @@ import android.util.Log;
  * @author Thilanka Munasinghe (thilankawillbe@gmail.com)
  */
 @DesignerComponent(version = 1,
-    description = "<p>A non-visible component that models any device that can" +
+    description = "<p>A non-visible component that models a GPIO based device that can"
+        +
         " be attached to a pin of an Android Things supported Hardware Platfrom.</p>",
     category = ComponentCategory.EXTENSION,
     nonVisible = true,
@@ -61,9 +61,9 @@ public class AndroidThingsGPIO extends AndroidNonvisibleComponent implements Com
   private static final String DEFAULT_PIN_NAME = "GPIO_34";
   private static final String DEFAULT_CONNECTED_DEVICE =
       "For e.g. LED, TemperatureSensor";
-  
+
   private static final boolean DEBUG = true;
-  private final static String LOG_TAG = "AndroidThingsPin";
+  private final static String LOG_TAG = AndroidThingsGPIO.class.getSimpleName();
 
   private String mPinName;
   private boolean mIsOn = false; // false means OFF or LOW.
@@ -87,6 +87,7 @@ public class AndroidThingsGPIO extends AndroidNonvisibleComponent implements Com
   private PinValue mPinState = PinValue.LOW;
 
   private AndroidThingsBoard mAndroidThingsBoard;
+
   private AndroidThingsMessagingService mAndroidThingsMessagingService;
 
   /**
@@ -308,8 +309,8 @@ public class AndroidThingsGPIO extends AndroidNonvisibleComponent implements Com
   /**
    * Connect to the MQTTBroker, and if the pinDirection is 'in', i.e. a sensor
    * or some other input is connected to the Android Things Board, a message is
-   * sent announcing the pin that was registered.
-   * 
+   * sent announcing the pin that was registered. * @param pinName
+   * @param pinName
    * @param androidThingsBoard
    * @param isOutput
    */
@@ -337,7 +338,7 @@ public class AndroidThingsGPIO extends AndroidNonvisibleComponent implements Com
       Log.d(LOG_TAG, "Connected to the Messaging Server " + host + ":" + port);
     }
 
-    if (mPinDirection.equals(PinDirection.IN)) {
+    if (mPinDirection == PinDirection.IN) {
       Payload myPin =
           constructPayload(PinProperty.REGISTER, Action.REGISTER);
       String message = Message.constructMessage(myPin);
@@ -347,19 +348,15 @@ public class AndroidThingsGPIO extends AndroidNonvisibleComponent implements Com
             + " with this " + AndroidThingsBoard.class.getSimpleName()
             + " with this MQTT message: " + message);
       }
-      mAndroidThingsMessagingService
-          .publish(androidThingsBoard.BoardIdentifier(), message);
-      if (DEBUG) {
-        Log.d(LOG_TAG, "Registering Pin " + mPinName
-            + " with this " + AndroidThingsBoard.class.getSimpleName()
-            + " with this MQTT message: " + message);
-      }
-      /*
-       * The topic App Inventor should subscribe is in the form of
-       * <board_identifier>/appinventor
-       */
-      Subscribe(androidThingsBoard.getSubscribeTopic());
+      Publish(mAndroidThingsBoard.getPublishTopic(), message);
     }
+
+    /*
+     * Regardless of the direction of the pin App Inventor should subscribe to
+     * the incoming topic. The topic App Inventor should subscribe is in the
+     * form of <board_identifier>/appinventor
+     */
+    Subscribe(androidThingsBoard.getSubscribeTopic());
   }
 
   @SimpleEvent(description = "Event handler to return if the state of the pin changed from HIGH to LOW, " +
@@ -401,20 +398,21 @@ public class AndroidThingsGPIO extends AndroidNonvisibleComponent implements Com
           "Mqtt Message " + message + " received on subject " + topic + ".");
     }
     if (mPinDirection.equals(PinDirection.IN)
-        && topic.equals(mAndroidThingsBoard.BoardIdentifier())) {
-      Payload headerPin = Message.deconstrctMessage(message);
+        && topic.equals(mAndroidThingsBoard.getSubscribeTopic())) {
+      Payload payload = Message.deconstrctMessage(message);
       if (DEBUG) {
-              Log.d(LOG_TAG, "Received internal message for pin =" + headerPin);
+        Log.d(LOG_TAG, "Received internal message for pin " + mPinName
+            + ". Payload =" + payload);
       }
-      if (headerPin.getName().equals(mPinName)) {
-        if (headerPin.getProperty().equals(PinProperty.PIN_STATE)) {
-          if (headerPin.getValue().equals(PinValue.HIGH)) {
+      if (payload.getName().equals(mPinName)) {
+        if (payload.getProperty().equals(PinProperty.PIN_STATE)) {
+          if (payload.getValue().equals(PinValue.HIGH)) {
             if (!mIsOn) {
               mIsOn = true;
               PinStateChanged();
             }
             PinStateChangedToHigh();
-          } else if (headerPin.getValue().equals(PinValue.LOW)) {
+          } else if (payload.getValue().equals(PinValue.LOW)) {
             if (mIsOn) {
               mIsOn = false;
               PinStateChanged();
@@ -485,8 +483,7 @@ public class AndroidThingsGPIO extends AndroidNonvisibleComponent implements Com
     payload.setValue(mPinState);
     payload.setDirection(mPinDirection);
     String hardwarePlatform = mAndroidThingsBoard.HardwarePlatform();
-    payload.setAndroidThingsBoard(
-        AndroidThingsBoardFactory.getBoard(hardwarePlatform));
+    payload.setAndroidThingsBoard(hardwarePlatform);
     payload.setLabel(mConnectedDeviceName);
 
     if (payload.isInvalid()) {
