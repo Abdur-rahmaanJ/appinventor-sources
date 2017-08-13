@@ -427,7 +427,7 @@ public class AndroidThingsGPIO extends AndroidNonvisibleComponent implements Com
      * message.
      */
     if (topic != null && message != null && message.length() > 0) {
-      EventDispatcher.dispatchEvent(this, "MqttMessageReceived", topic,
+      EventDispatcher.dispatchEvent(this, "MessageReceived", topic,
           message);
     }
   }
@@ -444,7 +444,7 @@ public class AndroidThingsGPIO extends AndroidNonvisibleComponent implements Com
       Log.d(LOG_TAG, "Mqtt Message " + message + " sent on subjects " + allTopics + ".");
     }
     if (topics != null && topics.size() > 0 && message != null && message.length() > 0) {
-      EventDispatcher.dispatchEvent(this, "MqttMessageSent", topics, message);
+      EventDispatcher.dispatchEvent(this, "MessageSent", topics, message);
     }
   }
 
@@ -455,7 +455,7 @@ public class AndroidThingsGPIO extends AndroidNonvisibleComponent implements Com
       Log.d(LOG_TAG, "Connection via MQTT lost due to this error: " + error);
     }
     if (error != null) {
-      EventDispatcher.dispatchEvent(this, "MqttConnectionLost", error);
+      EventDispatcher.dispatchEvent(this, "ConnectionLost", error);
     }
   }
 

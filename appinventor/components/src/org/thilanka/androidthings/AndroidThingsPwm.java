@@ -48,6 +48,7 @@ public class AndroidThingsPwm extends AndroidNonvisibleComponent
     implements Component {
 
   private static final boolean DEBUG = true;
+
   private final static String LOG_TAG = AndroidThingsPwm.class.getSimpleName();
 
   private AndroidThingsBoard mAndroidThingsBoard;
@@ -72,7 +73,8 @@ public class AndroidThingsPwm extends AndroidNonvisibleComponent
     super(pContainer.$form());
     if (DEBUG) {
       Log.d(LOG_TAG,
-          "Inside the AppInventorAndroidThingsPinClient Constructor.");
+          "Inside the " + AndroidThingsPwm.class.getSimpleName()
+              + " Constructor.");
     }
 
     Activity context = pContainer.$context();
@@ -174,9 +176,7 @@ public class AndroidThingsPwm extends AndroidNonvisibleComponent
    * @param pwmName
    * @param androidThingsBoard
    */
-  @SimpleFunction(description = "Registers this pin with the AndroidThingsBoard "
-      + "and designates the directionality of the pin, i.e. whether it is input "
-      + "or output.")
+  @SimpleFunction(description = "Registers this pwm pin with the AndroidThingsBoard ")
   public void Register(String pwmName, AndroidThingsBoard androidThingsBoard) {
     mPwmName = pwmName;
     mAndroidThingsBoard = androidThingsBoard;
@@ -192,7 +192,6 @@ public class AndroidThingsPwm extends AndroidNonvisibleComponent
     if (DEBUG) {
       Log.d(LOG_TAG, "Connected to the Messaging Server " + host + ":" + port);
     }
-
   }
 
   /**
