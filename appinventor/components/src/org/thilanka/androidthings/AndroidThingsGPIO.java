@@ -278,8 +278,8 @@ public class AndroidThingsGPIO extends AndroidNonvisibleComponent implements Com
     }
   }
 
-  @SimpleFunction(description = "Subscribes to a topic on the given subject at the given mqttBrokerEndpoint. " +
-      "The Subscribe, method has two parameters such as  String pMqttBrokerEndpoint, String pTopic . ")
+  @SimpleFunction(description = "Subscribes to a topic on the given subject at "
+      + "the given Messaging Host:Port, i.e. MQTT Broker Endpoint.")
   public synchronized void Subscribe(final String topic) {
     if (DEBUG) {
       Log.d(LOG_TAG, "Subscribing to messages on topic " + topic);
@@ -293,7 +293,7 @@ public class AndroidThingsGPIO extends AndroidNonvisibleComponent implements Com
   }
 
   @SimpleFunction(description = "Unsubscribes to a topic on the given subject. The UnSubsribe, "
-      + " method takes the parameter String pTopic . ")
+      + " method takes the parameter String topic. ")
   public void Unsubscribe(String topic) {
     if (DEBUG) {
       Log.d(LOG_TAG, "Unsubscribing to messages on topic " + topic);
@@ -309,7 +309,8 @@ public class AndroidThingsGPIO extends AndroidNonvisibleComponent implements Com
   /**
    * Connect to the MQTTBroker, and if the pinDirection is 'in', i.e. a sensor
    * or some other input is connected to the Android Things Board, a message is
-   * sent announcing the pin that was registered. * @param pinName
+   * sent announcing the pin that was registered.
+   * @param pinName
    * @param pinName
    * @param androidThingsBoard
    * @param isOutput

@@ -236,9 +236,9 @@ public class AndroidThingsBoard extends AndroidNonvisibleComponent
   }
 
   /**
-   * Shutdown the Android Things Board GPIO provider.
+   * Shutdown the Android Things Board.
    */
-  @SimpleFunction(description = "Shutdown the Android Things Board GPIO provider.")
+  @SimpleFunction(description = "Shutdown the Android Things Board.")
   public void Shutdown() {
     if (DEBUG) {
       Log.d(LOG_TAG, "Shutting down the Android Things Board...");
@@ -252,11 +252,11 @@ public class AndroidThingsBoard extends AndroidNonvisibleComponent
   }
 
   /**
-   * Determines the status of the RaspberryPi GPIO Provider.
+   * Determines the status of the AndroidThings Board.
    * 
-   * @return true if the RaspberryPi GPIO provider has been shutdown.
+   * @return true if the Android Things Board has been shutdown.
    */
-  @SimpleFunction(description = "Returns true if the RaspberryPi GPIO provider "
+  @SimpleFunction(description = "Returns true if the Android Things Board "
       + "has been shutdown.")
   public boolean IsShutdown() {
     return pShutdown;
@@ -311,18 +311,19 @@ public class AndroidThingsBoard extends AndroidNonvisibleComponent
   }
  
   /**
-   * Indicates that the RaspberryPiServer has shutdown.
+   * Indicates that the Android Things Board has shutdown.
    * 
-   * @return true when the server has shutdown.
+   * @return true when the Android Things Board has shutdown.
    */
-  @SimpleEvent(description = "Indicates that the RaspberryPiServer has shutdown.")
+  @SimpleEvent(description = "Indicates that the Android Things Board has shutdown.")
   public boolean HasShutdown() {
     if (DEBUG) {
-      Log.d(LOG_TAG, "Handle an event if the RaspberryPi Server has shutdown.");
+      Log.d(LOG_TAG,
+          "Handle an event if the Android Things Board has shutdown.");
       Log.d(LOG_TAG, "To be implemented.");
     }
     // TODO subscribe to a message from the broker via the
-    // RaspberryPiAppInventorCompanion
+    // Companion
     return false;
   }
 
@@ -378,15 +379,15 @@ public class AndroidThingsBoard extends AndroidNonvisibleComponent
   }
 
   /**
-   * Indicates that a given message belonging to the given topics is sent
-   * through MQTT.
+   * Indicates that a given message belonging to the given topic is sent through
+   * MQTT.
    * 
    * @param topics
    * @param message
    */
   @Override
   @SimpleEvent(description = "Indicates that a given message belonging to the "
-      + "given topics is sent through MQTT.")
+      + "given topic is sent through MQTT.")
   public void MessageSent(List<String> topics, String message) {
     if (DEBUG) {
       StringBuilder topicBuilder = new StringBuilder();
