@@ -27,19 +27,15 @@ import android.os.Handler;
 import android.util.Log;
 
 /**
- * {@link AndroidThingsPwm} models a PWM device attached to an output pin of a
- * Google Android Things supported hardware platform, such as a servo motor or a
- * speaker or an LCD screen display. We can apply a proportional control signal
- * to the external device using a digital output pin. For more information,
- * please see
- * <a href="https://developer.android.com/things/sdk/pio/pwm.html">https://
- * developer.android.com/things/sdk/pio/pwm.html</a>.
+ * {@link AndroidThingsTemperatureSensor} models a non-visible component such as
+ * a Temperature Sensor available via the Bmx280SensorDriver that can be
+ * attached to a pin of an Android Things supported Hardware Platform.
  * 
  * @author Thilanka Munasinghe (thilankawillbe@gmail.com)
  */
 @DesignerComponent(version = 1, description = "<p>A non-visible component that "
-    + "models a Temperature Sensor avalable via the Bmx280SensorDriver that can"
-    + " be attached to a pin of an Android Things supported Hardware Platfrom.</p>", 
+    + "models a Temperature Sensor available via the Bmx280SensorDriver that can"
+    + " be attached to a pin of an Android Things supported Hardware Platform.</p>", 
     category = ComponentCategory.EXTENSION, nonVisible = true, iconName = "images/extension.png")
 @SimpleObject(external = true)
 @UsesPermissions(permissionNames = "android.permission.INTERNET, "
